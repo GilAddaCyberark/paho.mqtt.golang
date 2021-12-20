@@ -21,7 +21,7 @@ var (
 	dialerMgr *CustomDialerMgr
 )
 
-func init() {
+func CustomDialerInit() {
 	dialerMgr = &CustomDialerMgr{
 		dialers: make(map[string]CustomDialer),
 	}
@@ -39,6 +39,9 @@ func (t *CustomDialerMgr) AddDialer(schema string, fn CustomDialer) error {
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	if t.dialers == nil {
+		return nil
+	}
 	if _, ok := t.dialers[schema]; ok {
 		return errors.New("dialer of schema " + schema + " already exists")
 	}
@@ -48,9 +51,16 @@ func (t *CustomDialerMgr) AddDialer(schema string, fn CustomDialer) error {
 }
 
 func (t *CustomDialerMgr) GetDialer(schema string) CustomDialer {
+	if t == nil {
+		return nil
+	}
+
 	t.lock.Lock()
 	defer t.lock.Unlock()
 
+	if t.dialers == nil {
+		return nil
+	}
 	fn, ok := t.dialers[schema]
 	if ok {
 		return fn

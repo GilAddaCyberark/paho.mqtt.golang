@@ -14,7 +14,7 @@
  *    Seth Hoenig
  *    Allan Stockdill-Mander
  *    Mike Robertson
- *    MAtt Brittan
+ *    Matt Brittan
  */
 
 package mqtt
@@ -101,12 +101,12 @@ func openConnection(uri *url.URL, tlsc *tls.Config, timeout time.Duration, heade
 		}
 
 		return tlsConn, nil
+	default:
+		dialer := GetCustomDialer(uri.Scheme)
+		if dialer != nil {
+			return dialer(uri, tlsc, timeout, headers)
+		}
 	}
-	
-	dialer := GetCustomDialer(uri.Scheme)
-	if dialer != nil {
-		return dialer(uri, tlsc, timeout, headers)
-	}	
-	
+
 	return nil, errors.New("unknown protocol")
 }
