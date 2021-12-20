@@ -4,13 +4,12 @@ import (
 	"crypto/tls"
 	"errors"
 	"net"
-	"net/http"
 	"net/url"
 	"sync"
 	"time"
 )
 
-type CustomDialer = func(uri *url.URL, tlsc *tls.Config, timeout time.Duration, headers http.Header) (net.Conn, error)
+type CustomDialer = func(uri *url.URL, tlsc *tls.Config, timeout time.Duration, args ...interface{}) (net.Conn, error)
 
 type CustomDialerMgr struct {
 	lock    sync.Mutex
